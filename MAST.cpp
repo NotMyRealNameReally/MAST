@@ -4,10 +4,9 @@
 #include "Tree.h"
 using namespace std;
 
+// (4,(8,1,(5,3)),(9,2,(0,(7,6))))
 
-
-int main()
-{
+int main() {
     int amount;
     string* trees;
     cin >> amount;
@@ -16,7 +15,7 @@ int main()
     for (int i = 0; i < amount; i++) {
         string tree;
         cin >> tree;
-        cout << tree;
+        //cout << tree;
         trees[i] = tree;
     }
     for (int i = 0; i < amount - 1; i++) {
