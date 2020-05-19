@@ -11,7 +11,7 @@ struct Node {
 
 class Tree {
 private:
-	Node root;
+	Node** nodes;
 	int leaves = 0;
 	int innerVertices = 0;
 
@@ -20,5 +20,6 @@ private:
 	void countVertices(std::string newick);
 public:
 	Tree(std::string newick);
+	~Tree();
 };
 

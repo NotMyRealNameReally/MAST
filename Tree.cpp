@@ -4,32 +4,42 @@ using namespace std;
 
 Tree::Tree(string newick) {
 	countVertices(newick);
-	int inner = leaves;
 
-	root.parent = NULL;
-	root.sibling = NULL;
-	root.label = ++inner;
-	Node* current = &root;
+	nodes = new Node*[leaves + innerVertices];
+	int innerLabel = leaves;
+
+	//create root
+	Node* current = new Node;
+	current->parent = NULL;
+	current->sibling = NULL;
+	current->label = ++innerLabel;
+	nodes[innerLabel - 1] = current;
+
 	Node* node;
-
 	bool previousWasDigit = false;
-	string label;
+	string tmp;
 
 	for (char character : newick) {
 		if (isdigit(character)) {
-			label.push_back(character);
+			tmp.push_back(character);
 			previousWasDigit = true;
 		}
 		else {
 			if (previousWasDigit) {
-				current->label = stoi(label);
-				label.clear();
+				int leafLabel = stoi(tmp);
+				tmp.clear();
+				current->label = leafLabel;
 				previousWasDigit = false;
+
+				nodes[leafLabel - 1] = current;
 			}
 			switch (character) {
 			case '(':
-				if (current->label == NULL)
-					current->label = ++inner;
+				if (current->label == NULL) {
+					current->label = ++innerLabel;
+
+					nodes[innerLabel - 1] = current;
+				}
 				node = createChildOf(current);
 				current = node;
 				break;
@@ -79,4 +89,11 @@ void Tree::countVertices(std::string newick) {
 				innerVertices++;
 		}
 	}
+}
+
+Tree::~Tree() {
+	for (int i = 0; i < (leaves + innerVertices); i++) {
+		delete nodes[i];
+	}
+	delete[] nodes;
 }
