@@ -3,9 +3,15 @@
 using namespace std;
 
 Tree::Tree(string newick) {
+	bool previousWasDigit = false;
 	for (char& character : newick) {
-		if (isdigit(character))
+		if (isdigit(character)) {
 			leaves++;
+			if (previousWasDigit)
+				leaves--;
+			previousWasDigit = true;
+		} else
+			previousWasDigit = false;
 	}
 	innerVertices = leaves;
 	root.parent = NULL;
@@ -13,11 +19,20 @@ Tree::Tree(string newick) {
 	root.label = ++innerVertices;
 	Node* current = &root;
 	Node* node;
+	string label;
 
-	for (char& character : newick) {
-		if (isdigit(character))
-			current->label = character - '0';
+	for (char character : newick) {
+		if (isdigit(character)) {
+			label.push_back(character);
+			previousWasDigit = true;
+		}
+		//current->label = character - '0';
 		else {
+			if (previousWasDigit) {
+				current->label = stoi(label);
+				label.clear();
+				previousWasDigit = false;
+			}
 			switch (character) {
 			case '(':
 				if (current->label == NULL)

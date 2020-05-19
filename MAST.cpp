@@ -4,7 +4,7 @@
 #include "Tree.h"
 using namespace std;
 
-// (4,(8,1,(5,3)),(9,2,(0,(7,6))))
+// (4,(8,1,(5,3)),(9,2,(10,(7,6))))
 
 int main() {
     int amount;
