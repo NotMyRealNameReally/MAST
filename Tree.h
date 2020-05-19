@@ -13,12 +13,12 @@ class Tree {
 private:
 	Node root;
 	int leaves = 0;
-	int innerVertices = 1;
+	int innerVertices = 0;
 
 	Node* createChildOf(Node* parent);
 	Node* createSiblingOf(Node* previous);
+	void countVertices(std::string newick);
 public:
 	Tree(std::string newick);
-	//void createTree(std::string newick);
 };
 
