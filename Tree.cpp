@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Tree::Tree(string newick) {
+Tree::Tree(string newick){
 	countVertices(newick);
 
 	nodes = new Node*[leaves + innerVertices + 1];
@@ -52,6 +52,17 @@ Tree::Tree(string newick) {
 			}
 		}
 	}
+}
+
+bool Tree::isAncestor(int ancestorLabel, int descendantLabel) {
+	Node* ancestor = nodes[ancestorLabel];
+	Node* descendant = nodes[descendantLabel];
+	while (descendant->parent != NULL) {
+		if (descendant->parent == ancestor)
+			return true;
+		descendant = descendant->parent;
+	}
+	return false;
 }
 
 Node* Tree::createChildOf(Node* parent) {

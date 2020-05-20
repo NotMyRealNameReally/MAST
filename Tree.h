@@ -21,5 +21,12 @@ private:
 public:
 	Tree(std::string newick);
 	~Tree();
+	bool isAncestor(int ancestorLabel, int descendantLabel);
+	int getVerticesAmount() {
+		return leaves + innerVertices;
+	}
+	int getLeavesAmount() {
+		return leaves;
+	}
 };
 
