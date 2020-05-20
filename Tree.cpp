@@ -5,7 +5,7 @@ using namespace std;
 Tree::Tree(string newick) {
 	countVertices(newick);
 
-	nodes = new Node*[leaves + innerVertices];
+	nodes = new Node*[leaves + innerVertices + 1];
 	int innerLabel = leaves;
 
 	//create root
@@ -13,7 +13,7 @@ Tree::Tree(string newick) {
 	current->parent = NULL;
 	current->sibling = NULL;
 	current->label = ++innerLabel;
-	nodes[innerLabel - 1] = current;
+	nodes[innerLabel] = current;
 
 	Node* node;
 	bool previousWasDigit = false;
@@ -31,14 +31,14 @@ Tree::Tree(string newick) {
 				current->label = leafLabel;
 				previousWasDigit = false;
 
-				nodes[leafLabel - 1] = current;
+				nodes[leafLabel] = current;
 			}
 			switch (character) {
 			case '(':
 				if (current->label == NULL) {
 					current->label = ++innerLabel;
 
-					nodes[innerLabel - 1] = current;
+					nodes[innerLabel] = current;
 				}
 				node = createChildOf(current);
 				current = node;
@@ -92,7 +92,7 @@ void Tree::countVertices(std::string newick) {
 }
 
 Tree::~Tree() {
-	for (int i = 0; i < (leaves + innerVertices); i++) {
+	for (int i = 0; i < (leaves + innerVertices + 1); i++) {
 		delete nodes[i];
 	}
 	delete[] nodes;
