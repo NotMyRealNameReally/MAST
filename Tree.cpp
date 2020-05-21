@@ -57,12 +57,39 @@ Tree::Tree(string newick){
 bool Tree::isAncestor(int ancestorLabel, int descendantLabel) {
 	Node* ancestor = nodes[ancestorLabel];
 	Node* descendant = nodes[descendantLabel];
+
 	while (descendant->parent != NULL) {
 		if (descendant->parent == ancestor)
 			return true;
 		descendant = descendant->parent;
 	}
 	return false;
+}
+
+int Tree::countChildrenOf(int label) {
+	Node* node = nodes[label];
+	if (node->child == NULL)
+		return 0;
+	node = node->child;
+	int count = 1;
+
+	while (node->sibling != NULL) {
+		node = node->sibling;
+		count++;
+	}
+	return count;
+}
+
+int* Tree::getChildrenOf(int label) {
+	int amount = countChildrenOf(label);
+	int* arr = new int[amount];
+	Node* node = nodes[label]->child;
+
+	for (int i = 0; i < amount; i++) {
+		arr[i] = node->label;
+		node = node->sibling;
+	}
+	return arr;
 }
 
 Node* Tree::createChildOf(Node* parent) {
@@ -103,7 +130,7 @@ void Tree::countVertices(std::string newick) {
 }
 
 Tree::~Tree() {
-	for (int i = 0; i < (leaves + innerVertices + 1); i++) {
+	for (int i = 1; i < (leaves + innerVertices + 1); i++) {
 		delete nodes[i];
 	}
 	delete[] nodes;

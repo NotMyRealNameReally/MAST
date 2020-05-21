@@ -28,5 +28,7 @@ public:
 	int getLeavesAmount() {
 		return leaves;
 	}
+	int countChildrenOf(int label);
+	int* getChildrenOf(int label);
 };
 

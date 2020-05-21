@@ -4,7 +4,6 @@
 #include "Tree.h"
 using namespace std;
 
-
 /*
 (4,(8,1,(5,3)),(9,2,(10,(7,6))))
 (10,(8,(9,(5,4)),(6,2,3)),(7,1))
@@ -45,6 +44,54 @@ void compareInnerWithLeaves(Tree& first, Tree& second, int** matrix, int leavesA
 	}
 }
 
+int max(int a, int b) {
+	return a > b ? a : b;
+}
+
+int associateChildren(int** matrix, int* firstChildren, int* secondChildren, int firstAmount, int secondAmount, int current) {
+	if (current == firstAmount)
+		return 0;
+
+	int bestScore = associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, current + 1);
+	for (int i = 0; i < secondAmount; i++) {
+		if (secondChildren[i] != 0) {
+			int temp = secondChildren[i];
+			secondChildren[i] = 0;
+			int currentScore = matrix[firstChildren[current]][temp] + associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, current + 1);
+			secondChildren[i] = temp;
+			bestScore = bestScore > currentScore ? bestScore : currentScore;
+		}
+	}
+	return bestScore;
+}
+
+int compareWithChildren(int** matrix, int first, int second, int* firstChildren, int* secondChildren, int firstAmount, int secondAmount) {
+	int value = 0;
+	for (int i = 0; i < secondAmount; i++)
+		value = max(value, matrix[first][secondChildren[i]]);
+	for (int i = 0; i < firstAmount; i++)
+		value = max(value, matrix[firstChildren[i]][second]);
+	return value;
+}
+
+void compareInner(Tree& first, Tree& second, int** matrix, int leavesAmount, int rows, int columns) {
+	for (int i = rows - 1; i > leavesAmount; i--) {
+		for (int j = columns - 1; j > leavesAmount; j--) {
+			int firstAmount = first.countChildrenOf(i);
+			int	secondAmount = second.countChildrenOf(j);
+			int* firstChildren = first.getChildrenOf(i);
+			int* secondChildren = second.getChildrenOf(j);
+
+			int value = associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, 0);
+			value = max(value, compareWithChildren(matrix, i, j, firstChildren, secondChildren, firstAmount, secondAmount));
+			matrix[i][j] = value;
+
+			delete[] firstChildren;
+			delete[] secondChildren;
+		}
+	}
+}
+
 int compareTrees(Tree& first, Tree& second) {
 	int rows = first.getVerticesAmount() + 1;
 	int columns = second.getVerticesAmount() + 1;
@@ -52,10 +99,11 @@ int compareTrees(Tree& first, Tree& second) {
 	int leavesAmount = first.getLeavesAmount(); //oba drzewa mają tyle samo liści
 	fillLeaves(comparisonMatrix, leavesAmount);
 	compareInnerWithLeaves(first, second, comparisonMatrix, leavesAmount, rows, columns);
+	compareInner(first, second, comparisonMatrix, leavesAmount, rows, columns);
 
-
+	int result = leavesAmount - comparisonMatrix[leavesAmount + 1][leavesAmount + 1];
 	deleteMatrix(comparisonMatrix, rows, columns);
-	return 1;
+	return result;
 }
 
 int main() {
