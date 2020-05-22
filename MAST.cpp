@@ -47,7 +47,6 @@ int max(int a, int b) {
 int associateChildren(int** matrix, int* firstChildren, int* secondChildren, int firstAmount, int secondAmount, int current) {
 	if (current == firstAmount)
 		return 0;
-
 	//przypadek w którym aktualny wierzchołek nie jest wiązany z żadnym innym
 	int bestScore = associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, current + 1);
 
@@ -57,7 +56,8 @@ int associateChildren(int** matrix, int* firstChildren, int* secondChildren, int
 			secondChildren[i] = 0;
 
 			int associateCurrent = matrix[firstChildren[current]][temp];
-			int currentScore = associateCurrent + associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, current + 1);
+			int associateRest = associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, current + 1);
+			int currentScore = associateCurrent + associateRest;
 			bestScore = max(bestScore, currentScore);
 
 			secondChildren[i] = temp;
