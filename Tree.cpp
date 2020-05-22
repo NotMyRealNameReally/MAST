@@ -8,7 +8,7 @@ Tree::Tree(string newick){
 	nodes = new Node*[leaves + innerVertices + 1];
 	int innerLabel = leaves;
 
-	//create root
+	//korzeñ
 	Node* current = new Node;
 	current->parent = NULL;
 	current->sibling = NULL;
