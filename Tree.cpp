@@ -80,6 +80,7 @@ int Tree::countChildrenOf(int label) const {
 	return count;
 }
 
+//TODO: jeœli wêze³ nie ma dzieci to siê wykrzaczy
 int* Tree::getChildrenOf(int label) {
 	int amount = countChildrenOf(label);
 	int* arr = new int[amount];
@@ -114,6 +115,7 @@ Node* Tree::createSiblingOf(Node* previous) {
 	return node;
 }
 
+//TODO: nie dzia³a dla liœci > 99
 void Tree::countVertices(std::string newick) {
 	bool previousWasDigit = false;
 
