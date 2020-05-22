@@ -2,12 +2,8 @@
 #include <iostream>
 #include <string>
 #include "Tree.h"
-using namespace std;
 
-/*
-(4,(8,1,(5,3)),(9,2,(10,(7,6))))
-(10,(8,(9,(5,4)),(6,2,3)),(7,1))
-*/
+using namespace std;
 
 int** createMatrix(int rows, int columns) {
 	int** matrix = new int* [rows];
@@ -16,7 +12,7 @@ int** createMatrix(int rows, int columns) {
 	return matrix;
 }
 
-void deleteMatrix(int** matrix, int rows, int columns) {
+void deleteMatrix(int** matrix, int rows) {
 	for (int i = 0; i < rows; i++)
 		delete[] matrix[i];
 	delete[] matrix;
@@ -52,26 +48,28 @@ int associateChildren(int** matrix, int* firstChildren, int* secondChildren, int
 	if (current == firstAmount)
 		return 0;
 
+	//przypadek w którym aktualny wierzchołek nie jest wiązany z żadnym innym
 	int bestScore = associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, current + 1);
+
 	for (int i = 0; i < secondAmount; i++) {
 		if (secondChildren[i] != 0) {
 			int temp = secondChildren[i];
 			secondChildren[i] = 0;
 			int currentScore = matrix[firstChildren[current]][temp] + associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, current + 1);
 			secondChildren[i] = temp;
-			bestScore = bestScore > currentScore ? bestScore : currentScore;
+			bestScore = max(bestScore, currentScore);
 		}
 	}
 	return bestScore;
 }
 
 int compareWithChildren(int** matrix, int first, int second, int* firstChildren, int* secondChildren, int firstAmount, int secondAmount) {
-	int value = 0;
+	int score = 0;
 	for (int i = 0; i < secondAmount; i++)
-		value = max(value, matrix[first][secondChildren[i]]);
+		score = max(score, matrix[first][secondChildren[i]]);
 	for (int i = 0; i < firstAmount; i++)
-		value = max(value, matrix[firstChildren[i]][second]);
-	return value;
+		score = max(score, matrix[firstChildren[i]][second]);
+	return score;
 }
 
 void compareInner(Tree& first, Tree& second, int** matrix, int leavesAmount, int rows, int columns) {
@@ -82,9 +80,9 @@ void compareInner(Tree& first, Tree& second, int** matrix, int leavesAmount, int
 			int* firstChildren = first.getChildrenOf(i);
 			int* secondChildren = second.getChildrenOf(j);
 
-			int value = associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, 0);
-			value = max(value, compareWithChildren(matrix, i, j, firstChildren, secondChildren, firstAmount, secondAmount));
-			matrix[i][j] = value;
+			int score = associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, 0);
+			score = max(score, compareWithChildren(matrix, i, j, firstChildren, secondChildren, firstAmount, secondAmount));
+			matrix[i][j] = score;
 
 			delete[] firstChildren;
 			delete[] secondChildren;
@@ -97,12 +95,13 @@ int compareTrees(Tree& first, Tree& second) {
 	int columns = second.getVerticesAmount() + 1;
 	int** comparisonMatrix = createMatrix(rows, columns); // macierz porównawcza indeksuje od 1
 	int leavesAmount = first.getLeavesAmount(); //oba drzewa mają tyle samo liści
+
 	fillLeaves(comparisonMatrix, leavesAmount);
 	compareInnerWithLeaves(first, second, comparisonMatrix, leavesAmount, rows, columns);
 	compareInner(first, second, comparisonMatrix, leavesAmount, rows, columns);
 
 	int result = leavesAmount - comparisonMatrix[leavesAmount + 1][leavesAmount + 1];
-	deleteMatrix(comparisonMatrix, rows, columns);
+	deleteMatrix(comparisonMatrix, rows);
 	return result;
 }
 

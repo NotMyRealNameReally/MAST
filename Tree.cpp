@@ -54,7 +54,7 @@ Tree::Tree(string newick){
 	}
 }
 
-bool Tree::isAncestor(int ancestorLabel, int descendantLabel) {
+bool Tree::isAncestor(int ancestorLabel, int descendantLabel) const {
 	Node* ancestor = nodes[ancestorLabel];
 	Node* descendant = nodes[descendantLabel];
 
@@ -66,7 +66,7 @@ bool Tree::isAncestor(int ancestorLabel, int descendantLabel) {
 	return false;
 }
 
-int Tree::countChildrenOf(int label) {
+int Tree::countChildrenOf(int label) const {
 	Node* node = nodes[label];
 	if (node->child == NULL)
 		return 0;

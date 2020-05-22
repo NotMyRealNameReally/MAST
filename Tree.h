@@ -19,16 +19,16 @@ private:
 	Node* createSiblingOf(Node* previous);
 	void countVertices(std::string newick);
 public:
-	Tree(std::string newick);
+	explicit Tree(std::string newick);
 	~Tree();
-	bool isAncestor(int ancestorLabel, int descendantLabel);
-	int getVerticesAmount() {
+	bool isAncestor(int ancestorLabel, int descendantLabel) const;
+	int countChildrenOf(int label) const;
+	int* getChildrenOf(int label);
+	int getVerticesAmount() const {
 		return leaves + innerVertices;
 	}
-	int getLeavesAmount() {
+	int getLeavesAmount() const {
 		return leaves;
 	}
-	int countChildrenOf(int label);
-	int* getChildrenOf(int label);
 };
 
