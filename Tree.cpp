@@ -115,14 +115,15 @@ Node* Tree::createSiblingOf(Node* previous) {
 	return node;
 }
 
-//TODO: nie dzia³a dla liœci > 99
 void Tree::countVertices(std::string newick) {
 	bool previousWasDigit = false;
 
 	for (char& character : newick) {
-		if (isdigit(character) && !previousWasDigit) {
-			leaves++;
-			previousWasDigit = true;
+		if (isdigit(character)) {
+			if (!previousWasDigit) {
+				leaves++;
+				previousWasDigit = true;
+			}
 		} else {
 			previousWasDigit = false;
 			if (character == '(')
