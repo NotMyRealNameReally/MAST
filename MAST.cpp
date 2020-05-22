@@ -55,9 +55,12 @@ int associateChildren(int** matrix, int* firstChildren, int* secondChildren, int
 		if (secondChildren[i] != 0) {
 			int temp = secondChildren[i];
 			secondChildren[i] = 0;
-			int currentScore = matrix[firstChildren[current]][temp] + associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, current + 1);
-			secondChildren[i] = temp;
+
+			int associateCurrent = matrix[firstChildren[current]][temp];
+			int currentScore = associateCurrent + associateChildren(matrix, firstChildren, secondChildren, firstAmount, secondAmount, current + 1);
 			bestScore = max(bestScore, currentScore);
+
+			secondChildren[i] = temp;
 		}
 	}
 	return bestScore;
